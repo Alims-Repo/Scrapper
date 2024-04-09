@@ -111,6 +111,7 @@ class TiktokLive(context: Context, attrs: AttributeSet?) : FrameLayout(context, 
         return (this * context.resources.displayMetrics.density).toInt()
     }
 
+    @Keep
     interface OnClick {
         fun onProfileClick(id: String)
     }
