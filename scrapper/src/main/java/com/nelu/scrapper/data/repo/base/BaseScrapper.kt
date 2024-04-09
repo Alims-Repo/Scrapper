@@ -12,4 +12,6 @@ interface BaseScrapper {
     fun getUrlType(url : String) : TypeVideo
 
     suspend fun download(model : ModelDownload) : Boolean
+
+    suspend fun download(model: ArrayList<ModelDownload>) : Boolean
 }

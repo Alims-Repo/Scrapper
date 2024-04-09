@@ -2,6 +2,8 @@ package com.nelu.scrapper.config
 
 object JSQuery {
 
+    const val TIKTOK_AUTO_PLAY = "javascript:document.querySelector('css-12jr7p2-DivPlayerIconContainer').click();"
+
     const val REMOVE_LOGIN = """
                                     (function() {
                                         var button = document.querySelector('.css-u3m0da-DivBoxContainer');

@@ -1,5 +1,6 @@
 package com.nelu.scrapper.data.model
 
+import android.util.Log
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
@@ -11,5 +12,9 @@ data class ModelDownload(
     val image: String,
     val thumbnail: String,
     val description: String,
-    val type: TypeVideo
+    val type: TypeVideo,
+    val url: String,
+
+    val progress: Int = -1,
+    val addedDate: Long = System.currentTimeMillis()
 )

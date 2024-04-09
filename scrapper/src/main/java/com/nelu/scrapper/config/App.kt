@@ -1,8 +1,12 @@
 package com.nelu.scrapper.config
 
 object App {
+    /** Application Internal */
     const val DATABASE_NAME = "scrapper"
     const val BASE_URL = "https://us-central1-snaptik-pro.cloudfunctions.net/api/"
+
+    /** Local URL */
+    const val TIKTOK = "https://www.tiktok.com/"
 
     const val DOWNLOAD_AUDIO_LINK = "https://www.tikwm.com/video/music/"
     const val DOWNLOAD_ORIGINAL_VIDEO_LINK = "https://www.tikwm.com/video/media/wmplay/"

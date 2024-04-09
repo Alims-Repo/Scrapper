@@ -17,7 +17,7 @@ object Initializer {
         .addConverterFactory(GsonConverterFactory.create())
         .build()
 
-    /** Remote API's */
+    /** Remote API */
     val apiService: ApiService get() = retrofit.create(ApiService::class.java)
 
 

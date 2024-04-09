@@ -22,6 +22,8 @@ object Scrapper : BaseScrapper {
 
     override suspend fun download(model: ModelDownload) = scrapper.download(model)
 
+    override suspend fun download(model: ArrayList<ModelDownload>) = scrapper.download(model)
+
     fun init(application: Application) {
         context = application
         check(this::context.isInitialized) {

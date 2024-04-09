@@ -4,9 +4,15 @@ import com.nelu.scrapper.data.repo.base.BaseScrapper
 import com.nelu.scrapper.data.repo.base.BaseTiktok
 import com.nelu.scrapper.data.model.ModelDownload
 import com.nelu.scrapper.data.model.TypeVideo
+import com.nelu.scrapper.di.Initializer.daoDownloads
+import com.nelu.scrapper.service.Downloader
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import java.util.regex.Pattern
 
 class RepoScrapper : BaseScrapper {
+
+    private val coroutineScope = CoroutineScope(Dispatchers.IO)
 
     override val tiktok: BaseTiktok = RepoTiktok()
 
@@ -19,7 +25,15 @@ class RepoScrapper : BaseScrapper {
     }
 
     override suspend fun download(model: ModelDownload): Boolean {
-        TODO("Not yet implemented")
+        Downloader(coroutineScope, model).start()
+//        daoDownloads.insertDownloads(model)
+        return true
+    }
+
+    override suspend fun download(model: ArrayList<ModelDownload>): Boolean {
+        model.forEach { Downloader(coroutineScope, it).start() }
+//        daoDownloads.insertDownloads(model)
+        return true
     }
 
     private fun isTikTokUrl(url: String): Boolean {
