@@ -31,20 +31,20 @@ class SplashActivity : AppCompatActivity(), TiktokLive.OnClick {
 
 
         CoroutineScope(Dispatchers.IO).launch {
-            Scrapper.tiktok.getVideo(
-                this@SplashActivity,
-                "https://www.tiktok.com/@rifatrohman06/video/7354755867369114881"
-            )?.let { model->
-                Scrapper.downloads.download(
-                    model.toModelDownload(model.noWaterHD ?: model.noWaterSD)
-                ).let {
-                    runOnUiThread {
-                        it.observe(this@SplashActivity) {
-                            Log.e("Progress", it?.toString() ?: "Empty")
-                        }
-                    }
-                }
-            }
+//            Scrapper.tiktok.getVideo(
+//                this@SplashActivity,
+//                "https://www.tiktok.com/@rifatrohman06/video/7354755867369114881"
+//            )?.let { model->
+//                Scrapper.downloads.download(
+//                    model.toModelDownload(model.noWaterHD ?: model.noWaterSD)
+//                ).let {
+//                    runOnUiThread {
+//                        it.observe(this@SplashActivity) {
+//                            Log.e("Progress", it?.toString() ?: "Empty")
+//                        }
+//                    }
+//                }
+//            }
 
 //            Scrapper.tiktok.getProfile(
 //                this@SplashActivity,
@@ -55,10 +55,21 @@ class SplashActivity : AppCompatActivity(), TiktokLive.OnClick {
 //            }
         }
 
-//        findViewById<TiktokLive>(R.id.tiktok).run {
-//            setListener(this@SplashActivity)
-//            start()
-//        }
+        findViewById<TiktokLive>(R.id.tiktok).run {
+            setListener(this@SplashActivity)
+            start()
+        }
+    }
+
+    override fun onShare(videoURL: String) {
+        val shareIntent = Intent(Intent.ACTION_SEND)
+        shareIntent.type = "text/plain"
+        shareIntent.putExtra(Intent.EXTRA_TEXT, videoURL)
+        startActivity(Intent.createChooser(shareIntent, "Share URL"))
+    }
+
+    override fun onDownload(videoURL: String) {
+        TODO("Not yet implemented")
     }
 
     override fun onProfileClick(id: String) {

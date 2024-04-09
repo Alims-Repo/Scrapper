@@ -23,10 +23,39 @@ object JSQuery {
             "}" +
             "})();"
 
+//    const val REMOVE_BUTTON = "(function() { " +
+//            "var elements = document.getElementsByClassName('e365p2r5');" +
+//            "for (var i = 0; i < elements.length; i++) {" +
+//            "elements[i].remove();" +
+//            "}" +
+//            "})();"
+
+
+    const val CLICK_SHARE = "(function() { " +
+            "var iconElement = document.querySelector('[data-e2e=\"share-icon\"]');" +
+            "if (iconElement) {" +
+            "   iconElement.click();" +
+            "}" +
+            "})();"
+
+    const val CLICK_COPY = "(function() { " +
+            "var iconElement = document.querySelector('.css-1bhic2r-DivPlatWrap');" + // Select the icon element
+            "if (iconElement) {" +
+            "   iconElement.click();" + // Click the icon element
+            "}" +
+            "})();"
+
+    const val HIDE_COPY_DIALOG = "(function() { " +
+            "var elements = document.getElementsByClassName('css-14feuhu');" +
+            "for (var i = 0; i < elements.length; i++) {" +
+            "elements[i].style.display = 'none';" +
+            "}" +
+            "})();"
+
     const val REMOVE_BUTTON = "(function() { " +
             "var elements = document.getElementsByClassName('e365p2r5');" +
             "for (var i = 0; i < elements.length; i++) {" +
-            "elements[i].remove();" +
+            "elements[i].style.display = 'none';" +
             "}" +
             "})();"
 

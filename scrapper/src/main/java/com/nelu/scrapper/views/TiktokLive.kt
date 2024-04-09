@@ -1,18 +1,32 @@
 package com.nelu.scrapper.views
 
 import android.app.Activity
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
+import android.content.res.ColorStateList
+import android.graphics.Color
 import android.util.AttributeSet
 import android.util.Log
+import android.view.Gravity
 import android.view.View
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.FrameLayout
+import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.ProgressBar
 import androidx.annotation.Keep
+import androidx.core.content.res.ResourcesCompat
+import com.nelu.scrapper.R
+import com.nelu.scrapper.Scrapper
 import com.nelu.scrapper.config.App.TIKTOK
 import com.nelu.scrapper.config.JSQuery.TIKTOK_AUTO_PLAY
+import com.nelu.scrapper.data.model.TypeVideo
+import com.nelu.scrapper.views.JSQuery.CLICK_COPY
+import com.nelu.scrapper.views.JSQuery.CLICK_SHARE
 import com.nelu.scrapper.views.JSQuery.GET_USER_ID
+import com.nelu.scrapper.views.JSQuery.HIDE_COPY_DIALOG
 import com.nelu.scrapper.views.JSQuery.REMOVE_BUTTON
 import com.nelu.scrapper.views.JSQuery.REMOVE_CONTAINER
 import com.nelu.scrapper.views.JSQuery.REMOVE_FOOTER
@@ -27,8 +41,13 @@ import org.json.JSONArray
 @Keep
 class TiktokLive(context: Context, attrs: AttributeSet?) : FrameLayout(context, attrs) {
 
-    private val webView: WebView
     private var onClick: OnClick? = null
+
+    private val iconSize = 32.dpToPx(context)
+
+    private val webView: WebView
+    private val shareIcon: ImageView
+    private val downloadIcon: ImageView
 
     fun setListener(onClick: OnClick) {
         this.onClick = onClick
@@ -37,6 +56,12 @@ class TiktokLive(context: Context, attrs: AttributeSet?) : FrameLayout(context, 
     fun start() = webView.loadUrl(TIKTOK)
 
     init {
+        shareIcon = ImageView(context)
+        downloadIcon = ImageView(context)
+
+        shareIcon.elevation = 10F
+        downloadIcon.elevation = 10F
+
         val progressBar = ProgressBar(context)
         val progressBarLayoutParams = LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
         progressBarLayoutParams.gravity = android.view.Gravity.CENTER
@@ -88,7 +113,40 @@ class TiktokLive(context: Context, attrs: AttributeSet?) : FrameLayout(context, 
                             else it.getString(1)).let { id->
                                 onClick?.onProfileClick(id.substring(2, id.length))
                             }
+                            Log.e("DATA", it.toString())
                         }
+                    }
+                }
+
+                shareIcon.setOnClickListener {
+                    view?.evaluateJavascript(CLICK_SHARE) {
+                        view.evaluateJavascript(CLICK_COPY) {
+                            val clipboardManager = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                            if (clipboardManager.hasPrimaryClip()) {
+                                Log.e("HAS", "TRUE")
+                                val clipData: ClipData? = clipboardManager.primaryClip
+                                if (clipData != null && clipData.itemCount > 0) {
+                                    onClick?.onShare(clipData.getItemAt(0).text.toString())
+                                }
+                            }
+                        }
+                        view.evaluateJavascript(HIDE_COPY_DIALOG, null)
+                    }
+                }
+
+                downloadIcon.setOnClickListener {
+                    view?.evaluateJavascript(CLICK_SHARE) {
+                        view.evaluateJavascript(CLICK_COPY) {
+                            val clipboardManager = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                            if (clipboardManager.hasPrimaryClip()) {
+                                Log.e("HAS", "TRUE")
+                                val clipData: ClipData? = clipboardManager.primaryClip
+                                if (clipData != null && clipData.itemCount > 0) {
+                                    onClick?.onDownload(clipData.getItemAt(0).text.toString())
+                                }
+                            }
+                        }
+                        view.evaluateJavascript(HIDE_COPY_DIALOG, null)
                     }
                 }
 
@@ -102,9 +160,51 @@ class TiktokLive(context: Context, attrs: AttributeSet?) : FrameLayout(context, 
         progressBar.visibility = View.VISIBLE
         webView.visibility = View.GONE
 
+        val iconsLayout = LinearLayout(context)
+        val iconsLayoutParams = LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
+        iconsLayoutParams.gravity = Gravity.END or Gravity.BOTTOM
+        iconsLayoutParams.bottomMargin = 80.dpToPx(context)
+        iconsLayoutParams.marginEnd = 16.dpToPx(context)
+        iconsLayout.layoutParams = iconsLayoutParams
+        iconsLayout.orientation = LinearLayout.VERTICAL
+
+        shareIcon.imageTintList = ColorStateList.valueOf(Color.WHITE)
+        val shareIconLayoutParams = LayoutParams(iconSize, iconSize)
+        shareIconLayoutParams.gravity = Gravity.END or Gravity.BOTTOM
+        shareIcon.layoutParams = shareIconLayoutParams
+
+        downloadIcon.imageTintList = ColorStateList.valueOf(Color.WHITE)
+        val downloadIconLayoutParams = LayoutParams(iconSize, iconSize)
+        downloadIconLayoutParams.gravity = Gravity.END or Gravity.BOTTOM
+        downloadIconLayoutParams.topMargin = 24.dpToPx(context)
+        downloadIcon.layoutParams = downloadIconLayoutParams
+
+        shareIcon.setImageDrawable(
+            ResourcesCompat.getDrawable(
+                context.resources,
+                R.drawable.share,
+                null
+            )
+        )
+
+        downloadIcon.setImageDrawable(
+            ResourcesCompat.getDrawable(
+                context.resources,
+                R.drawable.download,
+                null
+            )
+        )
+
+        iconsLayout.addView(shareIcon)
+        iconsLayout.addView(downloadIcon)
+
+        progressBar.visibility = View.VISIBLE
+        webView.visibility = View.GONE
+
         addView(progressBar)
         addView(webView)
         addView(customView)
+        addView(iconsLayout)
     }
 
     private fun Int.dpToPx(context: Context): Int {
@@ -113,6 +213,10 @@ class TiktokLive(context: Context, attrs: AttributeSet?) : FrameLayout(context, 
 
     @Keep
     interface OnClick {
+        fun onShare(videoURL: String)
+
+        fun onDownload(videoURL: String)
+
         fun onProfileClick(id: String)
     }
 }
