@@ -4,6 +4,7 @@ import com.nelu.scrapper.data.repo.base.BaseScrapper
 import com.nelu.scrapper.data.repo.base.BaseTiktok
 import com.nelu.scrapper.data.model.ModelDownload
 import com.nelu.scrapper.data.model.TypeVideo
+import com.nelu.scrapper.data.repo.base.BaseDownloads
 import com.nelu.scrapper.di.Initializer.daoDownloads
 import com.nelu.scrapper.service.Downloader
 import kotlinx.coroutines.CoroutineScope
@@ -16,24 +17,14 @@ class RepoScrapper : BaseScrapper {
 
     override val tiktok: BaseTiktok = RepoTiktok()
 
+    override val downloads: BaseDownloads = RepoDownloads(coroutineScope)
+
     override fun getUrlType(url: String) =  when {
         isTikTokUrl(url) -> TypeVideo.TIKTOK
         isFacebookUrl(url) -> TypeVideo.FACEBOOK
         isInstagramUrl(url) -> TypeVideo.INSTAGRAM
         isTwitterUrl(url) -> TypeVideo.TWITTER
         else -> TypeVideo.UNKNOWN
-    }
-
-    override suspend fun download(model: ModelDownload): Boolean {
-        Downloader(coroutineScope, model).start()
-//        daoDownloads.insertDownloads(model)
-        return true
-    }
-
-    override suspend fun download(model: ArrayList<ModelDownload>): Boolean {
-        model.forEach { Downloader(coroutineScope, it).start() }
-//        daoDownloads.insertDownloads(model)
-        return true
     }
 
     private fun isTikTokUrl(url: String): Boolean {

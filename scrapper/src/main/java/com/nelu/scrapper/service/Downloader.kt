@@ -6,6 +6,7 @@ import com.nelu.scrapper.di.Initializer.apiService
 import com.nelu.scrapper.di.Initializer.daoDownloads
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import java.io.File
 
 class Downloader(
@@ -13,12 +14,12 @@ class Downloader(
     private val modelDownload: ModelDownload
 ) {
 
-    suspend fun start() {
-        coroutineScope.async {
+    fun start() {
+        coroutineScope.launch {
             val response = apiService.downloadFile(modelDownload.url).execute()
             val body = response.body()
 
-            if (!response.isSuccessful || body == null) return@async
+            if (!response.isSuccessful || body == null) return@launch
 
             val totalFileSize = body.contentLength()
             val outputFile = File(Scrapper.context.filesDir, modelDownload.id)
@@ -55,6 +56,6 @@ class Downloader(
                     )
                 }
             }
-        }.await()
+        }
     }
 }

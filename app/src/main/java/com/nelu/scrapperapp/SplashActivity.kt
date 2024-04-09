@@ -35,7 +35,15 @@ class SplashActivity : AppCompatActivity(), TiktokLive.OnClick {
                 this@SplashActivity,
                 "https://www.tiktok.com/@rifatrohman06/video/7354755867369114881"
             )?.let { model->
-                Scrapper.download(model.toModelDownload(model.noWaterHD ?: model.noWaterSD))
+                Scrapper.downloads.download(
+                    model.toModelDownload(model.noWaterHD ?: model.noWaterSD)
+                ).let {
+                    runOnUiThread {
+                        it.observe(this@SplashActivity) {
+                            Log.e("Progress", it?.toString() ?: "Empty")
+                        }
+                    }
+                }
             }
 
 //            Scrapper.tiktok.getProfile(

@@ -6,6 +6,7 @@ import com.nelu.scrapper.data.repo.base.BaseScrapper
 import com.nelu.scrapper.data.repo.base.BaseTiktok
 import com.nelu.scrapper.data.model.ModelDownload
 import com.nelu.scrapper.data.model.TypeVideo
+import com.nelu.scrapper.data.repo.base.BaseDownloads
 import com.nelu.scrapper.di.Scrapper
 
 @Keep
@@ -18,11 +19,9 @@ object Scrapper : BaseScrapper {
 
     override val tiktok: BaseTiktok get() = scrapper.tiktok
 
+    override val downloads: BaseDownloads get() = scrapper.downloads
+
     override fun getUrlType(url: String) = scrapper.getUrlType(url)
-
-    override suspend fun download(model: ModelDownload) = scrapper.download(model)
-
-    override suspend fun download(model: ArrayList<ModelDownload>) = scrapper.download(model)
 
     fun init(application: Application) {
         context = application

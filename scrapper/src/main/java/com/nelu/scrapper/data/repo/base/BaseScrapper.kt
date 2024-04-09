@@ -8,10 +8,8 @@ interface BaseScrapper {
     /** Other Interface Accessor */
     val tiktok: BaseTiktok
 
+    val downloads: BaseDownloads
+
     /** Universal Functions */
     fun getUrlType(url : String) : TypeVideo
-
-    suspend fun download(model : ModelDownload) : Boolean
-
-    suspend fun download(model: ArrayList<ModelDownload>) : Boolean
 }
