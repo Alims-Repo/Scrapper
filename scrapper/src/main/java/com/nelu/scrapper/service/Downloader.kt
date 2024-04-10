@@ -8,53 +8,82 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import java.io.File
+import java.util.concurrent.LinkedBlockingQueue
 
 class Downloader(
-    private val coroutineScope: CoroutineScope,
-    private val modelDownload: ModelDownload
+    private val coroutineScope: CoroutineScope
 ) {
 
-    fun start() {
+    private var isExecutingTasks = false
+
+    private val taskQueue = LinkedBlockingQueue<ModelDownload>()
+
+
+    fun start(task: ModelDownload) {
+        taskQueue.offer(task)
+        daoDownloads.insertDownloads(task.copy(progress = -1))
+        executeTasks()
+    }
+
+    fun start(taskList: List<ModelDownload>) {
+        taskList.forEach { task ->
+            taskQueue.offer(task)
+            daoDownloads.insertDownloads(task.copy(progress = -1))
+        }
+        executeTasks()
+    }
+
+    private fun executeTasks() {
+        if (isExecutingTasks) return
+        isExecutingTasks = true
         coroutineScope.launch {
-            val response = apiService.downloadFile(modelDownload.url).execute()
-            val body = response.body()
+            while (true) {
+                val task = taskQueue.poll() ?: break
+                getDownloadTask(task)
+            }
+            isExecutingTasks = false
+        }
+    }
 
-            if (!response.isSuccessful || body == null) return@launch
+    private suspend fun getDownloadTask(modelDownload: ModelDownload) {
+        val response = apiService.downloadFile(modelDownload.url).execute()
+        val body = response.body()
 
-            val totalFileSize = body.contentLength()
-            val outputFile = File(Scrapper.context.filesDir, modelDownload.id)
+        if (!response.isSuccessful || body == null) return
 
-            if (outputFile.exists()) outputFile.deleteRecursively()
+        val totalFileSize = body.contentLength()
+        val outputFile = File(Scrapper.context.filesDir, modelDownload.id)
 
-            var fileSizeDownloaded: Long = 0
+        if (outputFile.exists()) outputFile.deleteRecursively()
 
-            daoDownloads.insertDownloads(
-                modelDownload.copy(progress = 0)
-            )
+        var fileSizeDownloaded: Long = 0
 
-            body.byteStream().use { inputStream ->
-                outputFile.outputStream().use { outputStream ->
-                    val buffer = ByteArray(4096)
-                    var bytesRead: Int
+        daoDownloads.insertDownloads(
+            modelDownload.copy(progress = 0)
+        )
 
-                    var last = 0
-                    while (inputStream.read(buffer).also { bytesRead = it } != -1) {
-                        outputStream.write(buffer, 0, bytesRead)
-                        fileSizeDownloaded += bytesRead
+        body.byteStream().use { inputStream ->
+            outputFile.outputStream().use { outputStream ->
+                val buffer = ByteArray(4096)
+                var bytesRead: Int
 
-                        val progress = ((fileSizeDownloaded * 100) / totalFileSize).toInt()
-                        if (last != progress) {
-                            last = progress
-                            daoDownloads.insertDownloads(
-                                modelDownload.copy(progress = progress)
-                            )
-                        }
+                var last = 0
+                while (inputStream.read(buffer).also { bytesRead = it } != -1) {
+                    outputStream.write(buffer, 0, bytesRead)
+                    fileSizeDownloaded += bytesRead
+
+                    val progress = ((fileSizeDownloaded * 100) / totalFileSize).toInt()
+                    if (last != progress) {
+                        last = progress
+                        daoDownloads.insertDownloads(
+                            modelDownload.copy(progress = progress)
+                        )
                     }
-
-                    daoDownloads.insertDownloads(
-                        modelDownload.copy(progress = 100)
-                    )
                 }
+
+                daoDownloads.insertDownloads(
+                    modelDownload.copy(progress = 100)
+                )
             }
         }
     }

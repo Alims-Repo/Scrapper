@@ -12,13 +12,15 @@ class RepoDownloads(
     private val coroutineScope: CoroutineScope
 ) : BaseDownloads {
 
+    private val downloader = Downloader(coroutineScope)
+
     override fun download(model: ModelDownload): LiveData<ModelDownload> {
-        Downloader(coroutineScope, model).start()
+        downloader.start(model)
         return daoDownloads.getCurrentProgress()
     }
 
     override fun download(model: ArrayList<ModelDownload>): Boolean {
-        model.forEach { Downloader(coroutineScope, it).start() }
+        downloader.start(model)
         return true
     }
 

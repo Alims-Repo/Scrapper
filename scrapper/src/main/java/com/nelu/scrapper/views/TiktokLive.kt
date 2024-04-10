@@ -19,15 +19,13 @@ import android.widget.ProgressBar
 import androidx.annotation.Keep
 import androidx.core.content.res.ResourcesCompat
 import com.nelu.scrapper.R
-import com.nelu.scrapper.Scrapper
 import com.nelu.scrapper.config.App.TIKTOK
 import com.nelu.scrapper.config.JSQuery.TIKTOK_AUTO_PLAY
-import com.nelu.scrapper.data.model.TypeVideo
 import com.nelu.scrapper.views.JSQuery.CLICK_COPY
 import com.nelu.scrapper.views.JSQuery.CLICK_SHARE
 import com.nelu.scrapper.views.JSQuery.GET_USER_ID
 import com.nelu.scrapper.views.JSQuery.HIDE_COPY_DIALOG
-import com.nelu.scrapper.views.JSQuery.REMOVE_BUTTON
+import com.nelu.scrapper.views.JSQuery.HIDE_BUTTON
 import com.nelu.scrapper.views.JSQuery.REMOVE_CONTAINER
 import com.nelu.scrapper.views.JSQuery.REMOVE_FOOTER
 import com.nelu.scrapper.views.JSQuery.REMOVE_HEADER
@@ -69,9 +67,9 @@ class TiktokLive(context: Context, attrs: AttributeSet?) : FrameLayout(context, 
         progressBar.elevation = 10F
 
         val customView = View(context)
-        val customViewLayoutParams = LayoutParams(200.dpToPx(context), 100.dpToPx(context))
+        val customViewLayoutParams = LayoutParams(220.dpToPx(context), 120.dpToPx(context))
         customViewLayoutParams.gravity = android.view.Gravity.START or android.view.Gravity.BOTTOM
-        customViewLayoutParams.setMargins(0, 0, 0, 32.dpToPx(context))
+        customViewLayoutParams.setMargins(0, 0, 0, 0)
         customView.layoutParams = customViewLayoutParams
 
         // Create WebView
@@ -96,7 +94,7 @@ class TiktokLive(context: Context, attrs: AttributeSet?) : FrameLayout(context, 
                 CoroutineScope(Dispatchers.Main).launch {
                     while (!(context as Activity).isDestroyed) {
                         try {
-                            view?.evaluateJavascript(REMOVE_BUTTON, null)
+                            view?.evaluateJavascript(HIDE_BUTTON, null)
                         } catch (e: Exception) { Log.d(this@TiktokLive.javaClass.name, "Line 70: $e") }
                         delay(2500)
                     }
@@ -123,7 +121,6 @@ class TiktokLive(context: Context, attrs: AttributeSet?) : FrameLayout(context, 
                         view.evaluateJavascript(CLICK_COPY) {
                             val clipboardManager = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                             if (clipboardManager.hasPrimaryClip()) {
-                                Log.e("HAS", "TRUE")
                                 val clipData: ClipData? = clipboardManager.primaryClip
                                 if (clipData != null && clipData.itemCount > 0) {
                                     onClick?.onShare(clipData.getItemAt(0).text.toString())
@@ -139,7 +136,6 @@ class TiktokLive(context: Context, attrs: AttributeSet?) : FrameLayout(context, 
                         view.evaluateJavascript(CLICK_COPY) {
                             val clipboardManager = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                             if (clipboardManager.hasPrimaryClip()) {
-                                Log.e("HAS", "TRUE")
                                 val clipData: ClipData? = clipboardManager.primaryClip
                                 if (clipData != null && clipData.itemCount > 0) {
                                     onClick?.onDownload(clipData.getItemAt(0).text.toString())
@@ -163,7 +159,7 @@ class TiktokLive(context: Context, attrs: AttributeSet?) : FrameLayout(context, 
         val iconsLayout = LinearLayout(context)
         val iconsLayoutParams = LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
         iconsLayoutParams.gravity = Gravity.END or Gravity.BOTTOM
-        iconsLayoutParams.bottomMargin = 80.dpToPx(context)
+        iconsLayoutParams.bottomMargin = 48.dpToPx(context)
         iconsLayoutParams.marginEnd = 16.dpToPx(context)
         iconsLayout.layoutParams = iconsLayoutParams
         iconsLayout.orientation = LinearLayout.VERTICAL

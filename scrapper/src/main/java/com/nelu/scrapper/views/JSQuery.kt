@@ -31,17 +31,19 @@ object JSQuery {
 //            "})();"
 
 
-    const val CLICK_SHARE = "(function() { " +
-            "var iconElement = document.querySelector('[data-e2e=\"share-icon\"]');" +
-            "if (iconElement) {" +
-            "   iconElement.click();" +
-            "}" +
+    const val CLICK_SHARE = "(function() {" +
+            "    var iconElements = document.querySelectorAll('[data-e2e=\"share-icon\"]');" +
+            "    if (iconElements.length > 3) {" +
+            "        iconElements[1].click();" +
+            "    } else if (iconElements.length > 1) {" +
+            "        iconElements[0].click();" +
+            "    }" +
             "})();"
 
     const val CLICK_COPY = "(function() { " +
-            "var iconElement = document.querySelector('.css-1bhic2r-DivPlatWrap');" + // Select the icon element
+            "var iconElement = document.querySelector('.css-1bhic2r-DivPlatWrap');" +
             "if (iconElement) {" +
-            "   iconElement.click();" + // Click the icon element
+            "   iconElement.click();" +
             "}" +
             "})();"
 
@@ -52,8 +54,8 @@ object JSQuery {
             "}" +
             "})();"
 
-    const val REMOVE_BUTTON = "(function() { " +
-            "var elements = document.getElementsByClassName('e365p2r5');" +
+    const val HIDE_BUTTON = "(function() { " +
+            "var elements = document.getElementsByClassName('e365p2r4');" +
             "for (var i = 0; i < elements.length; i++) {" +
             "elements[i].style.display = 'none';" +
             "}" +

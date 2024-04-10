@@ -69,7 +69,21 @@ class SplashActivity : AppCompatActivity(), TiktokLive.OnClick {
     }
 
     override fun onDownload(videoURL: String) {
-        TODO("Not yet implemented")
+        CoroutineScope(Dispatchers.IO).launch {
+            Scrapper.tiktok.getVideo(
+                this@SplashActivity, videoURL
+            )?.let {
+                Scrapper.downloads.download(it.toModelDownload(it.noWaterHD ?: it.noWaterSD))
+            }
+        }
+
+        Scrapper.downloads.getAllQueueLive().observe(this) {
+            Log.e("STATUS All Queue", it?.size?.toString() ?: "")
+        }
+
+        Scrapper.downloads.getCurrentProgress().observe(this) {
+            Log.e("STATUS Current Progress", it?.progress?.toString() ?: "")
+        }
     }
 
     override fun onProfileClick(id: String) {
