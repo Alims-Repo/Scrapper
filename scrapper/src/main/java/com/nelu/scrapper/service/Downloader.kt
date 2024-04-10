@@ -20,6 +20,7 @@ class Downloader(
 
 
     fun start(task: ModelDownload) {
+        if (taskQueue.contains(task)) return
         taskQueue.offer(task)
         daoDownloads.insertDownloads(task.copy(progress = -1))
         executeTasks()
@@ -27,6 +28,7 @@ class Downloader(
 
     fun start(taskList: List<ModelDownload>) {
         taskList.forEach { task ->
+            if (taskQueue.contains(task)) return@forEach
             taskQueue.offer(task)
             daoDownloads.insertDownloads(task.copy(progress = -1))
         }
