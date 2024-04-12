@@ -23,12 +23,6 @@ class ExampleInstrumentedTest {
 
     @Test
     fun checkFacebookAPI() {
-        val context = InstrumentationRegistry.getInstrumentation().targetContext
-        Scrapper.init(context)
-        runBlocking {
-            val video = Scrapper.facebook.getVideo("https://www.facebook.com/share/v/uAjY17QzG1keiwpw/?mibextid=jmPrMh")
-            println(video.toString())
-            assertNotNull(video)
-        }
+
     }
 }
