@@ -20,7 +20,7 @@ data class ModelTiktok(
     val noWaterHD: String?
 ) {
     companion object {
-        fun ModelTiktok.toModelDownload(downloadURL: String): ModelDownload {
+        fun ModelTiktok.toModelDownload(downloadURL: String, audio: Boolean = false): ModelDownload {
             return ModelDownload(
                 id = id,
                 name = name,
@@ -28,10 +28,10 @@ data class ModelTiktok(
                 thumbnail = thumbnail,
                 description = title,
                 type = TypeVideo.TIKTOK,
-                url = downloadURL
+                url = downloadURL,
+                audio = audio
             )
         }
-
 
         fun JsonObject.toModelTiktok(url: String): ModelTiktok {
             get("data").asJsonObject.get("result").asJsonObject.run {

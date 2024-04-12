@@ -15,6 +15,7 @@ data class ModelDownload(
     val type: TypeVideo,
     val url: String,
 
+    val audio: Boolean = false,
     val progress: Int = -1,
     val addedDate: Long = System.currentTimeMillis()
 )
