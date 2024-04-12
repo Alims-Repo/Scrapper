@@ -7,11 +7,15 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.nelu.scrapper.Scrapper
 import com.nelu.scrapper.data.model.ModelDownload
+import com.nelu.scrapper.data.model.ModelFacebook.Companion.toModelDownload
 import com.nelu.scrapper.data.model.ModelTiktok.Companion.toModelDownload
+import com.nelu.scrapper.data.repo.RepoFacebook
 import com.nelu.scrapper.di.Initializer.daoDownloads
 import com.nelu.scrapper.views.TiktokLive
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
 import kotlin.system.measureTimeMillis
 
@@ -21,9 +25,9 @@ class SplashActivity : AppCompatActivity(), TiktokLive.OnClick {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
 
-        daoDownloads.getAllCompleted().let {
-            Log.e("Completed", it?.toString() ?: "Empty")
-        }
+//        daoDownloads.getAllCompleted().let {
+//            Log.e("Completed", it?.toString() ?: "Empty")
+//        }
 
         daoDownloads.getCurrentProgress().observe(this) {
             Log.e("Update", it?.toString() ?: "Empty")
@@ -31,20 +35,36 @@ class SplashActivity : AppCompatActivity(), TiktokLive.OnClick {
 
 
         CoroutineScope(Dispatchers.IO).launch {
-//            Scrapper.tiktok.getVideo(
-//                this@SplashActivity,
-//                "https://www.tiktok.com/@rifatrohman06/video/7354755867369114881"
-//            )?.let { model->
-//                Scrapper.downloads.download(
-//                    model.toModelDownload(model.noWaterHD ?: model.noWaterSD)
-//                ).let {
-//                    runOnUiThread {
-//                        it.observe(this@SplashActivity) {
-//                            Log.e("Progress", it?.toString() ?: "Empty")
-//                        }
-//                    }
-//                }
-//            }
+
+            listOf(
+                async {
+                    Scrapper.facebook.getVideo("https://www.facebook.com/share/v/uAjY17QzG1keiwpw/?mibextid=jmPrMh")?.let {
+                        Log.e("facebook", it.toString())
+                    }
+                }, async {
+                    Scrapper.instagram.getVideo("https://www.instagram.com/reel/C4lF8_0o-0p/?igsh=ODAxZ2V4aXQwaWx5")?.let {
+                        Log.e("instagram", it.toString())
+                    }
+                }, async {
+                    Scrapper.twitter.getVideo("https://twitter.com/TeamAbhiSha/status/1743351410761019794?t=vms8wxcU0mQuhVxwGCHjFw&s=19")?.let {
+                        Log.e("twitter", it.toString())
+                    }
+                }, async {
+                    Scrapper.tiktok.getVideo("https://www.tiktok.com/@rifatrohman06/video/7354755867369114881")?.let {
+                        Log.e("tiktok", it.toString())
+                    }
+                }
+            ).awaitAll()
+
+            //Scrapper.downloads.download(
+            //                    model.toModelDownload(model.noWaterHD ?: model.noWaterSD)
+            //                ).let {
+            //                    runOnUiThread {
+            //                        it.observe(this@SplashActivity) {
+            //                            Log.e("Progress", it?.toString() ?: "Empty")
+            //                        }
+            //                    }
+            //                }
 
 //            Scrapper.tiktok.getProfile(
 //                this@SplashActivity,
@@ -53,12 +73,13 @@ class SplashActivity : AppCompatActivity(), TiktokLive.OnClick {
 //                Log.e("DATA", it.size.toString())
 //                Log.e("DATA", it.toString())
 //            }
+
         }
 
-        findViewById<TiktokLive>(R.id.tiktok).run {
-            setListener(this@SplashActivity)
-            start()
-        }
+//        findViewById<TiktokLive>(R.id.tiktok).run {
+//            setListener(this@SplashActivity)
+//            start()
+//        }
     }
 
     override fun onShare(videoURL: String) {
@@ -70,9 +91,7 @@ class SplashActivity : AppCompatActivity(), TiktokLive.OnClick {
 
     override fun onDownload(videoURL: String) {
         CoroutineScope(Dispatchers.IO).launch {
-            Scrapper.tiktok.getVideo(
-                this@SplashActivity, videoURL
-            )?.let {
+            Scrapper.tiktok.getVideo(videoURL)?.let {
                 Scrapper.downloads.download(it.toModelDownload(it.noWaterHD ?: it.noWaterSD))
             }
         }

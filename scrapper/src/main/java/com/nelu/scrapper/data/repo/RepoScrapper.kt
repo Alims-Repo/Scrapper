@@ -5,6 +5,9 @@ import com.nelu.scrapper.data.repo.base.BaseTiktok
 import com.nelu.scrapper.data.model.ModelDownload
 import com.nelu.scrapper.data.model.TypeVideo
 import com.nelu.scrapper.data.repo.base.BaseDownloads
+import com.nelu.scrapper.data.repo.base.BaseFacebook
+import com.nelu.scrapper.data.repo.base.BaseInstagram
+import com.nelu.scrapper.data.repo.base.BaseTwitter
 import com.nelu.scrapper.di.Initializer.daoDownloads
 import com.nelu.scrapper.service.Downloader
 import kotlinx.coroutines.CoroutineScope
@@ -13,9 +16,17 @@ import java.util.regex.Pattern
 
 class RepoScrapper : BaseScrapper {
 
-    private val coroutineScope = CoroutineScope(Dispatchers.IO)
+    private val coroutineScope by lazy {
+        CoroutineScope(Dispatchers.IO)
+    }
 
     override val tiktok: BaseTiktok = RepoTiktok()
+
+    override val twitter: BaseTwitter get() = RepoTwitter()
+
+    override val facebook: BaseFacebook = RepoFacebook()
+
+    override val instagram: BaseInstagram get() = RepoInstagram()
 
     override val downloads: BaseDownloads = RepoDownloads(coroutineScope)
 

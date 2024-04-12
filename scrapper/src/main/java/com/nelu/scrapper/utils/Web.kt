@@ -60,7 +60,6 @@ suspend fun getWebView(activity: Activity, url: String, desktop: Boolean = false
 }
 
 suspend fun getThumbnail(activity: Activity, url: String): String {
-
     return suspendCancellableCoroutine { continuation ->
         activity.runOnUiThread {
             WebView(activity).let { w ->
@@ -111,15 +110,47 @@ suspend fun getThumbnail(activity: Activity, url: String): String {
     }
 }
 
+//suspend fun paginateWebView(webView: WebView?, count: Int = 3) {
+//    // Define a function for recursive pagination
+//    suspend fun paginateRecursively(currentPosition: Int = 0, pageCount: Int = count) {
+//        if (currentPosition >= pageCount) {
+//            return  // Exit recursion when pagination is complete
+//        }
+//
+//        // Evaluate JavaScript to get total height of the page
+//        webView?.evaluateJavascript("(function() { return document.body.scrollHeight; })();") { result ->
+//            val totalHeight = result?.toIntOrNull() ?: 0
+//            val pageSize = 1000
+//
+//            // Paginate by scrolling to each section of the page
+//            var scrollToPosition = currentPosition * pageSize
+//            while (scrollToPosition < totalHeight) {
+//                val script = "window.scrollTo(0, $scrollToPosition);"
+//                webView?.evaluateJavascript(script, null)
+//                scrollToPosition += pageSize
+//                delay(500)  // Adjust delay as needed to allow time for page rendering
+//            }
+//
+//            // Continue recursive pagination for the next section
+//            coroutineScope.launch {
+//                paginateRecursively(currentPosition + 1, pageCount)
+//            }
+//        }
+//    }
+//
+//    // Start pagination
+//    paginateRecursively()
+//}
+
+
 suspend fun paginateWebView(webView: WebView?, count: Int = 3) {
+    var currentPosition : Int = 0
     for (x in count downTo 0) {
         webView?.evaluateJavascript(
             "(function() { return document.body.scrollHeight; })();"
         ) { result ->
-            Log.e("Res", result.toString())
             val totalHeight = result?.toIntOrNull() ?: 0
             val pageSize = 1000
-            var currentPosition = 0
 
             while (currentPosition < totalHeight) {
                 val script = "window.scrollTo(0, ${currentPosition + pageSize});"

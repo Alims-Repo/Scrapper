@@ -8,6 +8,12 @@ interface BaseScrapper {
     /** Other Interface Accessor */
     val tiktok: BaseTiktok
 
+    val twitter: BaseTwitter
+
+    val facebook: BaseFacebook
+
+    val instagram: BaseInstagram
+
     val downloads: BaseDownloads
 
     /** Universal Functions */
