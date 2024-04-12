@@ -39,7 +39,8 @@ class RepoScrapper : BaseScrapper {
     }
 
     private fun isTikTokUrl(url: String): Boolean {
-        val tiktokPattern = Pattern.compile("^(https?://)?(www\\.)?(tiktok\\.com)")
+        val tiktokPattern = Pattern.compile("^(https?://)?(www\\.)?(tiktok\\.com|vt\\.tiktok\\.com)")
+//        val tiktokPattern = Pattern.compile("^(https?://)?(www\\.)?(tiktok\\.com)")
         return tiktokPattern.matcher(url).find()
     }
 

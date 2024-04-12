@@ -47,7 +47,6 @@ class RepoTiktok : BaseTiktok {
 
     override suspend fun getProfile(activity: Activity, url: String): List<ModelTiktok> {
         val profileID = if (url.contains("http")) extractUsernameFromTiktokUrl(url) else url
-
         return getWebView(activity, profileID.toProfileUrl(), true, 3000, 20000).let { view->
             delay(3000)
             withContext(Dispatchers.Main) {

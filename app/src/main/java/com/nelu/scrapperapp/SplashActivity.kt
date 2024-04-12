@@ -35,22 +35,26 @@ class SplashActivity : AppCompatActivity(), TiktokLive.OnClick {
 
 
         CoroutineScope(Dispatchers.IO).launch {
+            Scrapper.getUrlType("https://vt.tiktok.com/ZSFsHXB3F/").let {
+                Log.e("TYPE", it.toString())
+            }
 
             listOf(
+//                async {
+//                    Scrapper.facebook.getVideo("https://www.facebook.com/share/v/uAjY17QzG1keiwpw/?mibextid=jmPrMh")?.let {
+//                        Log.e("facebook", it.toString())
+//                    }
+//                }, async {
+//                    Scrapper.instagram.getVideo("https://www.instagram.com/reel/C4lF8_0o-0p/?igsh=ODAxZ2V4aXQwaWx5")?.let {
+//                        Log.e("instagram", it.toString())
+//                    }
+//                }, async {
+//                    Scrapper.twitter.getVideo("https://twitter.com/TeamAbhiSha/status/1743351410761019794?t=vms8wxcU0mQuhVxwGCHjFw&s=19")?.let {
+//                        Log.e("twitter", it.toString())
+//                    }
+//                },
                 async {
-                    Scrapper.facebook.getVideo("https://www.facebook.com/share/v/uAjY17QzG1keiwpw/?mibextid=jmPrMh")?.let {
-                        Log.e("facebook", it.toString())
-                    }
-                }, async {
-                    Scrapper.instagram.getVideo("https://www.instagram.com/reel/C4lF8_0o-0p/?igsh=ODAxZ2V4aXQwaWx5")?.let {
-                        Log.e("instagram", it.toString())
-                    }
-                }, async {
-                    Scrapper.twitter.getVideo("https://twitter.com/TeamAbhiSha/status/1743351410761019794?t=vms8wxcU0mQuhVxwGCHjFw&s=19")?.let {
-                        Log.e("twitter", it.toString())
-                    }
-                }, async {
-                    Scrapper.tiktok.getVideo("https://www.tiktok.com/@rifatrohman06/video/7354755867369114881")?.let {
+                    Scrapper.tiktok.getVideo("https://vt.tiktok.com/ZSFsHXB3F/")?.let {
                         Log.e("tiktok", it.toString())
                     }
                 }
