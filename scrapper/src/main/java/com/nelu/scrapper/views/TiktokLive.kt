@@ -37,21 +37,31 @@ import kotlinx.coroutines.launch
 import org.json.JSONArray
 
 @Keep
-class TiktokLive(context: Context, attrs: AttributeSet?) : FrameLayout(context, attrs) {
+class TiktokLive(context: Context, attrs: AttributeSet? = null) : FrameLayout(context, attrs) {
 
+
+    /** Private property */
     private var onClick: OnClick? = null
 
     private val iconSize = 32.dpToPx(context)
 
     private val webView: WebView
+
     private val shareIcon: ImageView
+
     private val downloadIcon: ImageView
+
+
+    /** Public accessor */
+    fun pause () = webView.onPause()
+
+    fun resume() = webView.onResume()
+
+    fun start() = webView.loadUrl(TIKTOK)
 
     fun setListener(onClick: OnClick) {
         this.onClick = onClick
     }
-
-    fun start() = webView.loadUrl(TIKTOK)
 
     init {
         shareIcon = ImageView(context)
