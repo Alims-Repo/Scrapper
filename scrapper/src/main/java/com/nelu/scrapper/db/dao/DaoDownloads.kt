@@ -20,6 +20,9 @@ interface DaoDownloads {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertDownloads(data: List<ModelDownload>)
 
+    @Query("DELETE FROM ModelDownload WHERE id = :id")
+    fun delete(id: String)
+
     /** Advanced Query */
 
     @Query("SELECT * FROM ModelDownload WHERE progress = -1 ORDER BY addedDate DESC")

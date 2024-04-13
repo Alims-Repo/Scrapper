@@ -54,4 +54,6 @@ interface BaseDownloads {
      * @return A list containing all downloads.
      */
     fun getAllDownloads(): List<ModelDownload>
+
+    fun delete(id: String)
 }

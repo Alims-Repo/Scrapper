@@ -39,4 +39,8 @@ class RepoDownloads(
     override fun getAllDownloads(): List<ModelDownload> {
         return daoDownloads.getAllDownloads()
     }
+
+    override fun delete(id: String) {
+        daoDownloads.delete(id)
+    }
 }
