@@ -1,12 +1,14 @@
 package com.nelu.scrapper.data.repo
 
 import androidx.lifecycle.LiveData
+import com.nelu.scrapper.Scrapper
 import com.nelu.scrapper.data.model.ModelDownload
 import com.nelu.scrapper.data.repo.base.BaseDownloads
 import com.nelu.scrapper.di.Initializer.daoDownloads
 import com.nelu.scrapper.service.Downloader
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import java.io.File
 
 class RepoDownloads(
     private val coroutineScope: CoroutineScope
@@ -42,5 +44,7 @@ class RepoDownloads(
 
     override fun delete(id: String) {
         daoDownloads.delete(id)
+        if (File(Scrapper.context.filesDir, id).exists())
+            File(Scrapper.context.filesDir, id).delete()
     }
 }

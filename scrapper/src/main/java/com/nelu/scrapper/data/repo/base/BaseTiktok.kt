@@ -7,5 +7,5 @@ interface BaseTiktok {
 
     suspend fun getVideo(url: String) : ModelTiktok?
 
-    suspend fun getProfile(activity: Activity, url: String) : List<ModelTiktok>
+    suspend fun getProfile(activity: Activity, url: String, page: Int = 3) : List<ModelTiktok>
 }

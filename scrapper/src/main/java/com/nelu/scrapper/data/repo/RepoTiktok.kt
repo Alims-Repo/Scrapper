@@ -45,13 +45,13 @@ class RepoTiktok : BaseTiktok {
         return model?.apply { thumbnail = thumb }
     }
 
-    override suspend fun getProfile(activity: Activity, url: String): List<ModelTiktok> {
+    override suspend fun getProfile(activity: Activity, url: String, page: Int): List<ModelTiktok> {
         val profileID = if (url.contains("http")) extractUsernameFromTiktokUrl(url) else url
         return getWebView(activity, profileID.toProfileUrl(), true, 3000, 20000).let { view->
             delay(3000)
             withContext(Dispatchers.Main) {
                 view?.evaluateJavascript(REMOVE_LOGIN, null)
-                paginateWebView(view)
+                paginateWebView(view, page)
                 suspendCancellableCoroutine { continuation ->
                     view?.evaluateJavascript(GET_PROFILE_DATA) { html ->
                         continuation.resume(html.toTiktokArray(profileID))
