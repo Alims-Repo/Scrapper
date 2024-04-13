@@ -23,7 +23,7 @@ object JSQuery {
                                             var aTag = element.querySelector('a');
                                             var alt = aTag.querySelector('img').getAttribute('alt');
                                             var href = aTag.getAttribute('href');
-                                            var sourceTag = element.querySelector('source');
+                                            var sourceTag = element.querySelector('img');
                                             var src = sourceTag ? sourceTag.getAttribute('src') : null;
                                             var obj = { 'alt': alt, 'href': href, 'src': src };
                                             data.push(obj);

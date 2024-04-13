@@ -35,11 +35,11 @@ class SplashActivity : AppCompatActivity(), TiktokLive.OnClick {
 
 
         CoroutineScope(Dispatchers.IO).launch {
-            Scrapper.getUrlType("https://vt.tiktok.com/ZSFsHXB3F/").let {
-                Log.e("TYPE", it.toString())
-            }
-
-            listOf(
+//            Scrapper.getUrlType("https://vt.tiktok.com/ZSFsHXB3F/").let {
+//                Log.e("TYPE", it.toString())
+//            }
+//
+//            listOf(
 //                async {
 //                    Scrapper.facebook.getVideo("https://www.facebook.com/share/v/uAjY17QzG1keiwpw/?mibextid=jmPrMh")?.let {
 //                        Log.e("facebook", it.toString())
@@ -53,12 +53,12 @@ class SplashActivity : AppCompatActivity(), TiktokLive.OnClick {
 //                        Log.e("twitter", it.toString())
 //                    }
 //                },
-                async {
-                    Scrapper.tiktok.getVideo("https://vt.tiktok.com/ZSFsHXB3F/")?.let {
-                        Log.e("tiktok", it.toString())
-                    }
-                }
-            ).awaitAll()
+//                async {
+//                    Scrapper.tiktok.getVideo("https://vt.tiktok.com/ZSFsHXB3F/")?.let {
+//                        Log.e("tiktok", it.toString())
+//                    }
+//                }
+//            ).awaitAll()
 
             //Scrapper.downloads.download(
             //                    model.toModelDownload(model.noWaterHD ?: model.noWaterSD)
@@ -70,13 +70,13 @@ class SplashActivity : AppCompatActivity(), TiktokLive.OnClick {
             //                    }
             //                }
 
-//            Scrapper.tiktok.getProfile(
-//                this@SplashActivity,
-//                "https://www.tiktok.com/@sumaiya_mimu"
-//            ).let {
-//                Log.e("DATA", it.size.toString())
-//                Log.e("DATA", it.toString())
-//            }
+            Scrapper.tiktok.getProfile(
+                this@SplashActivity,
+                "https://www.tiktok.com/@sumaiya_mimu"
+            ).let {
+                Log.e("DATA", it.size.toString())
+                Log.e("DATA", it.map { it.thumbnail }.toString())
+            }
 
         }
 
