@@ -70,12 +70,16 @@ class SplashActivity : AppCompatActivity(), TiktokLive.OnClick {
             //                    }
             //                }
 
-            Scrapper.tiktok.getProfile(
-                this@SplashActivity,
-                "https://www.tiktok.com/@sumaiya_mimu"
-            ).let {
-                Log.e("DATA", it.size.toString())
-                Log.e("DATA", it.map { it.thumbnail }.toString())
+//            Scrapper.tiktok.getProfile(
+//                this@SplashActivity,
+//                "https://www.tiktok.com/@sumaiya_mimu"
+//            ).let {
+//                Log.e("DATA", it.size.toString())
+//                Log.e("DATA", it.map { it.thumbnail }.toString())
+//            }
+
+            Scrapper.tiktok.getProfilePic(this@SplashActivity, "sumaiya_mimu").let {
+                Log.e("Pro", it?.toString() ?: "EMPTY")
             }
 
         }
