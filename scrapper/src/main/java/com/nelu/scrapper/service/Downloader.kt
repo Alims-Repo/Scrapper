@@ -14,6 +14,8 @@ class Downloader(
     private val coroutineScope: CoroutineScope
 ) {
 
+    private var stop = false
+
     private var isExecutingTasks = false
 
     private val taskQueue = LinkedBlockingQueue<ModelDownload>()
@@ -33,6 +35,10 @@ class Downloader(
             daoDownloads.insertDownloads(task.copy(progress = -1))
         }
         executeTasks()
+    }
+
+    fun deleteCurrent() {
+        stop = true
     }
 
     private fun executeTasks() {
@@ -80,6 +86,12 @@ class Downloader(
                         daoDownloads.insertDownloads(
                             modelDownload.copy(progress = progress)
                         )
+                    }
+
+                    if (stop) {
+                        stop = false
+                        daoDownloads.delete(modelDownload.id)
+                        return@use
                     }
                 }
 
