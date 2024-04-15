@@ -68,7 +68,7 @@ class RepoTiktok : BaseTiktok {
             ).awaitAll()
         }
         return model?.apply {
-            vid = id
+            id = vid
             thumbnail = thumb
         }
     }
