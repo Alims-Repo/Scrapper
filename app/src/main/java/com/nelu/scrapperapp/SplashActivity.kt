@@ -78,16 +78,16 @@ class SplashActivity : AppCompatActivity(), TiktokLive.OnClick {
 //                Log.e("DATA", it.map { it.thumbnail }.toString())
 //            }
 
-            Scrapper.tiktok.getProfilePic(this@SplashActivity, "sumaiya_mimu").let {
-                Log.e("Pro", it?.toString() ?: "EMPTY")
-            }
+//            Scrapper.tiktok.getProfilePic(this@SplashActivity, "sumaiya_mimu").let {
+//                Log.e("Pro", it?.toString() ?: "EMPTY")
+//            }
 
         }
 
-//        findViewById<TiktokLive>(R.id.tiktok).run {
-//            setListener(this@SplashActivity)
-//            start()
-//        }
+        findViewById<TiktokLive>(R.id.tiktok).run {
+            setListener(this@SplashActivity)
+            start()
+        }
     }
 
     override fun onShare(videoURL: String) {

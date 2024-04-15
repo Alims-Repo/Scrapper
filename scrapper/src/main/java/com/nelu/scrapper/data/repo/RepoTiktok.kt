@@ -45,6 +45,7 @@ import kotlin.coroutines.resume
 class RepoTiktok : BaseTiktok {
 
     override suspend fun getVideo(url: String): ModelTiktok? {
+        var vid = ""
         var thumb = ""
         var model: ModelTiktok? = null
 
@@ -58,12 +59,18 @@ class RepoTiktok : BaseTiktok {
                     apiService.getTiktokThumbnail(
                         "https://www.tiktok.com/oembed?url=$url"
                     ).execute() .let {
-                        if (it.isSuccessful) thumb = it.body()?.get("thumbnail_url")?.asString.toString()
+                        if (it.isSuccessful) {
+                            vid = it.body()?.get("embed_product_id")?.asString.toString()
+                            thumb = it.body()?.get("thumbnail_url")?.asString.toString()
+                        }
                     }
                 }
             ).awaitAll()
         }
-        return model?.apply { thumbnail = thumb }
+        return model?.apply {
+            vid = id
+            thumbnail = thumb
+        }
     }
 
     override suspend fun getProfilePic(activity: Activity, profile: String): String? {

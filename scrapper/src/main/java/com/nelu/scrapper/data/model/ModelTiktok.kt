@@ -9,7 +9,7 @@ import com.nelu.scrapper.utils.extractVideoIdFromTiktokUrl
 import org.json.JSONArray
 
 data class ModelTiktok(
-    val id: String,
+    var id: String,
     val name: String,
     val profileImage: String,
     var thumbnail: String,
@@ -33,7 +33,7 @@ data class ModelTiktok(
             )
         }
 
-        fun JsonObject.toModelTiktok(url: String): ModelTiktok {
+        suspend fun JsonObject.toModelTiktok(url: String): ModelTiktok {
             get("data").asJsonObject.get("result").asJsonObject.run {
                 return ModelTiktok(
                     id  = extractVideoIdFromTiktokUrl(url),

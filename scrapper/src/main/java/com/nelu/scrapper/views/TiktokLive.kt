@@ -10,6 +10,7 @@ import android.util.AttributeSet
 import android.util.Log
 import android.view.Gravity
 import android.view.View
+import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.FrameLayout
@@ -95,7 +96,8 @@ class TiktokLive(context: Context, attrs: AttributeSet? = null) : FrameLayout(co
         webView.webViewClient = object : WebViewClient() {
             override fun onPageFinished(view: WebView?, url: String?) {
                 super.onPageFinished(view, url)
-
+                Log.e("FINISHED", url.toString())
+//
                 view?.evaluateJavascript(REMOVE_FOOTER, null)
                 view?.evaluateJavascript(REMOVE_MODAL, null)
                 view?.evaluateJavascript(REMOVE_CONTAINER, null)
