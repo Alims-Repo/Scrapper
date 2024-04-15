@@ -24,6 +24,8 @@ interface BaseDownloads {
      */
     fun download(model: ArrayList<ModelDownload>) : Boolean
 
+    fun deleteCurrent()
+
 
     /**
      * Retrieves a [LiveData] object representing the list of all downloads in the queue.

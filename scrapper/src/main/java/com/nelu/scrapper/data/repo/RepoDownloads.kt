@@ -26,6 +26,10 @@ class RepoDownloads(
         return true
     }
 
+    override fun deleteCurrent() {
+        downloader.deleteCurrent()
+    }
+
     override fun getAllQueueLive(): LiveData<List<ModelDownload>> {
         return daoDownloads.getAllQueueLive()
     }
