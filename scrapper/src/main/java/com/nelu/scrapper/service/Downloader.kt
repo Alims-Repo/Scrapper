@@ -4,6 +4,7 @@ import com.nelu.scrapper.Scrapper
 import com.nelu.scrapper.data.model.ModelDownload
 import com.nelu.scrapper.di.Initializer.apiService
 import com.nelu.scrapper.di.Initializer.daoDownloads
+import com.nelu.scrapper.di.Initializer.getPath
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
@@ -60,7 +61,7 @@ class Downloader(
         if (!response.isSuccessful || body == null) return
 
         val totalFileSize = body.contentLength()
-        val outputFile = File(Scrapper.context.filesDir, modelDownload.id)
+        val outputFile = File(getPath(modelDownload), modelDownload.id)
 
         if (outputFile.exists()) outputFile.deleteRecursively()
 

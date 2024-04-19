@@ -5,11 +5,13 @@ import com.nelu.scrapper.Scrapper
 import com.nelu.scrapper.config.App.BASE_URL
 import com.nelu.scrapper.config.App.DATABASE_NAME
 import com.nelu.scrapper.data.apis.ApiService
+import com.nelu.scrapper.data.model.ModelDownload
 import com.nelu.scrapper.db.AppDatabase
 import com.nelu.scrapper.db.dao.DaoDownloads
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.io.File
 import java.util.concurrent.TimeUnit
 
 object Initializer {
@@ -38,4 +40,15 @@ object Initializer {
 
     /** Local Data Access Object's */
     val daoDownloads: DaoDownloads get() = appDatabase.userDao()
+
+    /** Internals */
+    private fun getVideoPath()  = File(Scrapper.basePath, "Video").also { it.mkdirs() }.path
+
+    private fun getAudioPath() = File(Scrapper.basePath, "Audio").also { it.mkdirs() }.path
+
+    private fun getImagePath() = File(Scrapper.basePath, "Image").also { it.mkdirs() }.path
+
+    fun getPath(model: ModelDownload) : String {
+        return if (model.audio) getAudioPath() else getVideoPath()
+    }
 }

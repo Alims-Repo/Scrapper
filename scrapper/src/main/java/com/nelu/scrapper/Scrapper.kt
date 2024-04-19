@@ -13,10 +13,12 @@ import com.nelu.scrapper.data.repo.base.BaseFacebook
 import com.nelu.scrapper.data.repo.base.BaseInstagram
 import com.nelu.scrapper.data.repo.base.BaseTwitter
 import com.nelu.scrapper.di.Scrapper
+import java.io.File
 
 @Keep
 object Scrapper : BaseScrapper {
 
+    lateinit var basePath: String
     lateinit var context: Application
 
     /** Required variables to hold single instance of Scrapper */
@@ -34,7 +36,8 @@ object Scrapper : BaseScrapper {
 
     override fun getUrlType(url: String) = scrapper.getUrlType(url)
 
-    fun init(application: Application) {
+    fun init(application: Application, path: String = application.filesDir.path) {
+        basePath = path
         context = application
         check(this::context.isInitialized) {
             "Scrapper not initialized, call Scrapper.init(this) from your application class"
