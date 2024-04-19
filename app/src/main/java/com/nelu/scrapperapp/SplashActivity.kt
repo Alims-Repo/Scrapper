@@ -29,7 +29,7 @@ class SplashActivity : AppCompatActivity(), TiktokLive.OnClick {
 //            Log.e("Completed", it?.toString() ?: "Empty")
 //        }
 
-        daoDownloads.getCurrentProgress().observe(this) {
+        daoDownloads.getAllCompletedLive().observe(this) {
             Log.e("Update", it?.toString() ?: "Empty")
         }
 
@@ -41,9 +41,9 @@ class SplashActivity : AppCompatActivity(), TiktokLive.OnClick {
 //
 //            listOf(
 //                async {
-//                    Scrapper.facebook.getVideo("https://www.facebook.com/share/v/uAjY17QzG1keiwpw/?mibextid=jmPrMh")?.let {
-//                        Log.e("facebook", it.toString())
-//                    }
+                    Scrapper.facebook.getVideo("https://www.facebook.com/reel/426696173117357")?.let {
+                        Scrapper.downloads.download(it.toModelDownload())
+                    }
 //                }, async {
 //                    Scrapper.instagram.getVideo("https://www.instagram.com/reel/C4lF8_0o-0p/?igsh=ODAxZ2V4aXQwaWx5")?.let {
 //                        Log.e("instagram", it.toString())
@@ -82,12 +82,12 @@ class SplashActivity : AppCompatActivity(), TiktokLive.OnClick {
 //                Log.e("Pro", it?.toString() ?: "EMPTY")
 //            }
 
-            Scrapper.tiktok.getVideo("https://vt.tiktok.com/ZSFGv5QhH").let {
-                Log.e("ID", it?.id.toString())
-            }
-            Scrapper.tiktok.getVideo("https://vt.tiktok.com/ZSFGv5QhH").let {
-                Log.e("ID", it?.id.toString())
-            }
+//            Scrapper.tiktok.getVideo("https://vt.tiktok.com/ZSFGv5QhH").let {
+//                Log.e("ID", it?.id.toString())
+//            }
+//            Scrapper.tiktok.getVideo("https://vt.tiktok.com/ZSFGv5QhH").let {
+//                Log.e("ID", it?.id.toString())
+//            }
 
         }
 

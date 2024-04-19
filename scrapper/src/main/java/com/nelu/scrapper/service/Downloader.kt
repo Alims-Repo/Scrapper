@@ -71,7 +71,7 @@ class Downloader(
         var fileSizeDownloaded: Long = 0
 
         daoDownloads.insertDownloads(
-            modelDownload.copy(progress = 0, path = outputFile.path)
+            modelDownload.copy(progress = 0)
         )
 
         body.byteStream().use { inputStream ->
@@ -100,7 +100,7 @@ class Downloader(
                 }
 
                 daoDownloads.insertDownloads(
-                    modelDownload.copy(progress = 100)
+                    modelDownload.copy(progress = 100, path = outputFile.path)
                 )
             }
         }
