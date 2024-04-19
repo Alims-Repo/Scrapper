@@ -61,14 +61,17 @@ class Downloader(
         if (!response.isSuccessful || body == null) return
 
         val totalFileSize = body.contentLength()
-        val outputFile = File(getPath(modelDownload), modelDownload.id)
+        val outputFile = File(
+            getPath(modelDownload),
+            modelDownload.id + if (modelDownload.audio) ".mp3" else ".mp4"
+        )
 
         if (outputFile.exists()) outputFile.deleteRecursively()
 
         var fileSizeDownloaded: Long = 0
 
         daoDownloads.insertDownloads(
-            modelDownload.copy(progress = 0)
+            modelDownload.copy(progress = 0, path = outputFile.path)
         )
 
         body.byteStream().use { inputStream ->

@@ -42,11 +42,18 @@ object Initializer {
     val daoDownloads: DaoDownloads get() = appDatabase.userDao()
 
     /** Internals */
-    private fun getVideoPath()  = File(Scrapper.basePath, "Video").also { it.mkdirs() }.path
+    private val appPath = File(
+        Scrapper.basePath,
+        Scrapper.context.applicationInfo.loadLabel(
+            Scrapper.context.packageManager
+        ).toString()
+    )
 
-    private fun getAudioPath() = File(Scrapper.basePath, "Audio").also { it.mkdirs() }.path
+    private fun getVideoPath()  = File(appPath, "Video").also { it.mkdirs() }.path
 
-    private fun getImagePath() = File(Scrapper.basePath, "Image").also { it.mkdirs() }.path
+    private fun getAudioPath() = File(appPath, "Audio").also { it.mkdirs() }.path
+
+    private fun getImagePath() = File(appPath, "Image").also { it.mkdirs() }.path
 
     fun getPath(model: ModelDownload) : String {
         return if (model.audio) getAudioPath() else getVideoPath()

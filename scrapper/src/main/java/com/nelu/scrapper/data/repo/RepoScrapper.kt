@@ -8,6 +8,7 @@ import com.nelu.scrapper.data.repo.base.BaseDownloads
 import com.nelu.scrapper.data.repo.base.BaseFacebook
 import com.nelu.scrapper.data.repo.base.BaseInstagram
 import com.nelu.scrapper.data.repo.base.BaseTwitter
+import com.nelu.scrapper.di.Initializer
 import com.nelu.scrapper.di.Initializer.daoDownloads
 import com.nelu.scrapper.service.Downloader
 import kotlinx.coroutines.CoroutineScope
