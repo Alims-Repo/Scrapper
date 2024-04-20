@@ -7,6 +7,7 @@ import com.nelu.scrapper.di.Initializer.daoDownloads
 import com.nelu.scrapper.di.Initializer.getPath
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.io.File
 import java.util.concurrent.LinkedBlockingQueue
@@ -17,10 +18,19 @@ class Downloader(
 
     private var stop = false
 
+    private var pause = false
+
     private var isExecutingTasks = false
 
     private val taskQueue = LinkedBlockingQueue<ModelDownload>()
 
+    fun pause() {
+        pause = true
+    }
+
+    fun resume() {
+        pause = false
+    }
 
     fun start(task: ModelDownload) {
         if (taskQueue.contains(task)) return
@@ -90,6 +100,10 @@ class Downloader(
                         daoDownloads.insertDownloads(
                             modelDownload.copy(progress = progress)
                         )
+                    }
+
+                    while (pause) {
+                        delay(1000)
                     }
 
                     if (stop) {

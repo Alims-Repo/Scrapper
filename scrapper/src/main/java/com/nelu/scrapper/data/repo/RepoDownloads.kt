@@ -30,6 +30,14 @@ class RepoDownloads(
         downloader.deleteCurrent()
     }
 
+    override fun pause() {
+        downloader.pause()
+    }
+
+    override fun resume() {
+        downloader.resume()
+    }
+
     override fun getAllQueueLive(): LiveData<List<ModelDownload>> {
         return daoDownloads.getAllQueueLive()
     }

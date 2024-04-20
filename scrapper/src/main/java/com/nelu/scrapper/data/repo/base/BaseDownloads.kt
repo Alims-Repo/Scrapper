@@ -26,6 +26,10 @@ interface BaseDownloads {
 
     fun deleteCurrent()
 
+    fun pause()
+
+    fun resume()
+
 
     /**
      * Retrieves a [LiveData] object representing the list of all downloads in the queue.
