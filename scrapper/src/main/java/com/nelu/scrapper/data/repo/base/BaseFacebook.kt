@@ -7,4 +7,6 @@ import com.nelu.scrapper.data.model.ModelTiktok
 interface BaseFacebook {
 
     suspend fun getVideo(url: String) : ModelFacebook?
+
+    suspend fun getVideo(url: String, activity: Activity) : String?
 }

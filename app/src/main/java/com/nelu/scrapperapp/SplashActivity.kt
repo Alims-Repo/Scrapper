@@ -41,8 +41,8 @@ class SplashActivity : AppCompatActivity(), TiktokLive.OnClick {
 //
 //            listOf(
 //                async {
-                    Scrapper.facebook.getVideo("https://www.facebook.com/reel/426696173117357")?.let {
-                        Scrapper.downloads.download(it.toModelDownload())
+                    Scrapper.facebook.getVideo("https://www.facebook.com/share/v/uAjY17QzG1keiwpw/?mibextid=jmPrMh", this@SplashActivity)?.let {
+                        Log.e("DATA", it.toString())
                     }
 //                }, async {
 //                    Scrapper.instagram.getVideo("https://www.instagram.com/reel/C4lF8_0o-0p/?igsh=ODAxZ2V4aXQwaWx5")?.let {
