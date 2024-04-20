@@ -14,9 +14,11 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.coroutines.withContext
 import org.json.JSONArray
 import kotlin.coroutines.resume
 import kotlin.system.measureTimeMillis
@@ -24,36 +26,66 @@ import kotlin.system.measureTimeMillis
 class RepoFacebook : BaseFacebook {
 
     override suspend fun getVideo(url: String): ModelFacebook? {
-        return suspendCancellableCoroutine { continuation ->
-            var model: ModelFacebook? = null
-            CoroutineScope(Dispatchers.IO).launch {
-                listOf(
-                    async {
-                        apiService.getFacebookVideo(
-                            ModelRequest(url)
-                        ).execute()?.let {
-                            if (it.isSuccessful) it.body()?.toModelFacebook()
-                        }
-                    },
-                    async {
-                        apiService.getFacebookVideo(
-                            ModelRequest(url)
-                        ).execute()?.let {
-                            if (it.isSuccessful) it.body()?.toModelFacebook()
-                        }
-                    },
-                    async {
-                        apiService.getFacebookVideo(
-                            ModelRequest(url)
-                        ).execute()?.let {
-                            if (it.isSuccessful) it.body()?.toModelFacebook()
-                        }
+        return withContext(Dispatchers.IO) {
+            repeat(3) { attempt ->
+                delay(1000L * attempt)
+                try {
+                    val response = apiService.getFacebookVideo(ModelRequest(url)).execute()
+                    if (response.isSuccessful) {
+                        return@withContext response.body()?.toModelFacebook()
                     }
-                ).awaitAll()
-
-                continuation.resume(model)
+                } catch (e: Exception) {
+                    // Handle exception if needed
+                }
             }
+            return@withContext null // Return null if all attempts fail
         }
+//        return suspendCancellableCoroutine { continuation ->
+//
+//            val coroutineScope = CoroutineScope(Dispatchers.IO)
+//            coroutineScope.launch {
+//                listOf(
+//                    async {
+//                        try {
+//                            apiService.getFacebookVideo(
+//                                ModelRequest(url)
+//                            ).execute()?.let {
+//                                if (it.isSuccessful) {
+//                                    continuation.resume(it.body()?.toModelFacebook())
+//                                    coroutineScope.coroutineContext.cancelChildren()
+//                                }
+//                            }
+//                        } catch (e: Exception) {}
+//                    },
+//                    async {
+//                        delay(1000)
+//                        try {
+//                            apiService.getFacebookVideo(
+//                                ModelRequest(url)
+//                            ).execute()?.let {
+//                                if (it.isSuccessful) {
+//                                    continuation.resume(it.body()?.toModelFacebook())
+//                                    coroutineScope.coroutineContext.cancelChildren()
+//                                }
+//                            }
+//                        } catch (e: Exception) {}
+//                    },
+//                    async {
+//                        delay(2000)
+//                        try {
+//                            apiService.getFacebookVideo(
+//                                ModelRequest(url)
+//                            ).execute()?.let {
+//                                if (it.isSuccessful) {
+//                                    continuation.resume(it.body()?.toModelFacebook())
+//                                    coroutineScope.coroutineContext.cancelChildren()
+//                                }
+//                            }
+//                        } catch (e: Exception) {}
+//                    }
+//                ).awaitAll()
+//            }
+//        }
     }
 
     override suspend fun getVideo(url: String, activity: Activity): String? {
