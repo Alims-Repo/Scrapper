@@ -37,14 +37,14 @@ data class ModelTiktok(
             get("data").asJsonObject.get("result").asJsonObject.run {
                 return ModelTiktok(
                     id  = extractVideoIdFromTiktokUrl(url),
-                    name = get("author").asJsonObject.get("nickname").asString,
-                    profileImage = get("author").asJsonObject.get("avatar").asString,
+                    name = if (has("author")) get("author").asJsonObject.get("nickname").asString else "",
+                    profileImage = if (has("author")) get("author").asJsonObject.get("avatar").asString else "",
                     thumbnail = "",
-                    title = get("desc").asString,
-                    music =  get("music").asString,
-                    water = get("video_watermark").asString,
-                    noWaterSD =  get("video1").asString,
-                    noWaterHD = get("video_hd")?.asString,
+                    title = if (has("desc")) get("desc").asString else "",
+                    music = if (has("music")) get("music").asString else "",
+                    water = if (has("video_watermark")) get("video_watermark").asString else "",
+                    noWaterSD = if (has("video1")) get("video1").asString else "",
+                    noWaterHD = if (has("video_hd")) get("video_hd")?.asString else "",
                 )
             }
         }
