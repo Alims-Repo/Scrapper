@@ -11,12 +11,10 @@ fun extractUsernameFromTiktokUrl(url: String): String {
 }
 
 fun extractVideoIdFromTiktokUrl(url: String): String {
-    //https://vt.tiktok.com/ZSFsHXB3F/
     val regex = Regex("/video/(\\d+)")
     val matchResult = regex.find(url)
     return matchResult?.groupValues?.getOrNull(1) ?: System.currentTimeMillis().toString()
 }
-
 
 fun extractIdFromFacebookUrl(url: String): String {
     val pattern = Pattern.compile("/v/([^/?]+)")

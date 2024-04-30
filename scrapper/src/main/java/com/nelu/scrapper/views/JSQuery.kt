@@ -23,12 +23,17 @@ object JSQuery {
             "}" +
             "})();"
 
-//    const val REMOVE_BUTTON = "(function() { " +
-//            "var elements = document.getElementsByClassName('e365p2r5');" +
-//            "for (var i = 0; i < elements.length; i++) {" +
-//            "elements[i].remove();" +
-//            "}" +
-//            "})();"
+    /**
+     * Removing button doesn't allow share and download latter
+     *
+    const val REMOVE_BUTTON = "(function() { " +
+            "var elements = document.getElementsByClassName('e365p2r5');" +
+            "for (var i = 0; i < elements.length; i++) {" +
+            "elements[i].remove();" +
+            "}" +
+            "})();"
+
+    */
 
 
     const val CLICK_SHARE = "(function() {" +

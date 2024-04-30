@@ -83,7 +83,6 @@ class TiktokLive(context: Context, attrs: AttributeSet? = null) : FrameLayout(co
         customViewLayoutParams.setMargins(0, 0, 0, 0)
         customView.layoutParams = customViewLayoutParams
 
-        // Create WebView
         webView = WebView(context)
         val webViewLayoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
         webViewLayoutParams.bottomMargin = (-48).dpToPx(context)
@@ -92,12 +91,9 @@ class TiktokLive(context: Context, attrs: AttributeSet? = null) : FrameLayout(co
         webView.settings.javaScriptEnabled = true
         webView.settings.domStorageEnabled = true
 
-        // Set WebViewClient to handle page loading
         webView.webViewClient = object : WebViewClient() {
             override fun onPageFinished(view: WebView?, url: String?) {
                 super.onPageFinished(view, url)
-                Log.e("FINISHED", url.toString())
-//
                 view?.evaluateJavascript(REMOVE_FOOTER, null)
                 view?.evaluateJavascript(REMOVE_MODAL, null)
                 view?.evaluateJavascript(REMOVE_CONTAINER, null)

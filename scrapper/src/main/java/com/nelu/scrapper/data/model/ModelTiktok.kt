@@ -33,43 +33,55 @@ data class ModelTiktok(
             )
         }
 
-        suspend fun JsonObject.toModelTiktok(url: String): ModelTiktok {
-            get("data").asJsonObject.get("result").asJsonObject.run {
-                return ModelTiktok(
-                    id  = extractVideoIdFromTiktokUrl(url),
-                    name = try { get("author").asJsonObject.get("nickname").asString } catch (e: Exception) { "" },
-                    profileImage = try { get("author").asJsonObject.get("avatar").asString } catch (e: Exception) { "" },
-                    thumbnail = "",
-                    title = if (has("desc")) get("desc").asString else "",
-                    music = if (has("music")) get("music").asString else "",
-                    water = if (has("video_watermark")) get("video_watermark").asString else "",
-                    noWaterSD = if (has("video1")) get("video1").asString else "",
-                    noWaterHD = if (has("video_hd")) get("video_hd")?.asString else "",
-                )
+        suspend fun JsonObject.toModelTiktok(url: String): ModelTiktok? {
+            try {
+                get("data").asJsonObject.get("result").asJsonObject.run {
+                    return ModelTiktok(
+                        id = extractVideoIdFromTiktokUrl(url),
+                        name = try {
+                            get("author").asJsonObject.get("nickname").asString
+                        } catch (e: Exception) {
+                            ""
+                        },
+                        profileImage = try {
+                            get("author").asJsonObject.get("avatar").asString
+                        } catch (e: Exception) {
+                            ""
+                        },
+                        thumbnail = "",
+                        title = if (has("desc")) get("desc").asString else "",
+                        music = if (has("music")) get("music").asString else "",
+                        water = if (has("video_watermark")) get("video_watermark").asString else "",
+                        noWaterSD = if (has("video1")) get("video1").asString else "",
+                        noWaterHD = if (has("video_hd")) get("video_hd")?.asString else "",
+                    )
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                return null
             }
         }
 
         fun String.toTiktokArray(profileID: String): ArrayList<ModelTiktok> {
-//            val final = this.replace("\\","")
-            val arrayData = JSONArray(this)
-
             return ArrayList<ModelTiktok>().also {
-                for (x in 0 until arrayData.length()) {
-                    val obj = arrayData.getJSONObject(x)
-                    val videoID = extractVideoIdFromTiktokUrl(obj.getString("href"))
-                    it.add(
-                        ModelTiktok(
-                            id = videoID ?: System.currentTimeMillis().toString(),
-                            name = profileID,
-                            profileImage = "",
-                            thumbnail = obj.getString("src"),
-                            title = obj.getString("alt"),
-                            music = "$DOWNLOAD_AUDIO_LINK$videoID.mp3",
-                            water = "$DOWNLOAD_ORIGINAL_VIDEO_LINK$videoID.mp4",
-                            noWaterSD = "$DOWNLOAD_VIDEO_WITHOUT_WATERMARK$videoID.mp4",
-                            noWaterHD = "$DOWNLOAD_VIDEO_WITHOUT_WATERMARK_HD$videoID.mp4"
+                JSONArray(this).let { arrayData ->
+                    for (x in 0 until arrayData.length()) {
+                        val obj = arrayData.getJSONObject(x)
+                        val videoID = extractVideoIdFromTiktokUrl(obj.getString("href"))
+                        it.add(
+                            ModelTiktok(
+                                id = videoID,
+                                name = profileID,
+                                profileImage = "",
+                                thumbnail = obj.getString("src"),
+                                title = obj.getString("alt"),
+                                music = "$DOWNLOAD_AUDIO_LINK$videoID.mp3",
+                                water = "$DOWNLOAD_ORIGINAL_VIDEO_LINK$videoID.mp4",
+                                noWaterSD = "$DOWNLOAD_VIDEO_WITHOUT_WATERMARK$videoID.mp4",
+                                noWaterHD = "$DOWNLOAD_VIDEO_WITHOUT_WATERMARK_HD$videoID.mp4"
+                            )
                         )
-                    )
+                    }
                 }
             }
         }
