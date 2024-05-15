@@ -25,6 +25,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.channelFlow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
@@ -53,12 +57,12 @@ class RepoTiktok : BaseTiktok {
             listOf(
                 async {
                     apiService.getTiktokVideo(ModelRequest(url)).execute().let {
-                        if (it.isSuccessful) model = it.body()!!.toModelTiktok(url)
+                        if (it.isSuccessful) model = it.body()?.toModelTiktok(url)
                     }
                 }, async {
                     apiService.getTiktokThumbnail(
                         "https://www.tiktok.com/oembed?url=$url"
-                    ).execute() .let {
+                    ).execute().let {
                         if (it.isSuccessful) {
                             vid = it.body()?.get("embed_product_id")?.asString.toString()
                             thumb = it.body()?.get("thumbnail_url")?.asString.toString()
@@ -74,9 +78,9 @@ class RepoTiktok : BaseTiktok {
     }
 
     override suspend fun getProfilePic(activity: Activity, profile: String): String? {
-        return suspendCancellableCoroutine { continuation->
+        return suspendCancellableCoroutine { continuation ->
             activity.runOnUiThread {
-                WebView(activity).let { w->
+                WebView(activity).let { w ->
                     w.layoutParams = ViewGroup.LayoutParams(1, 1)
                     val s = w.settings
 
@@ -146,7 +150,7 @@ class RepoTiktok : BaseTiktok {
 
     override suspend fun getProfile(activity: Activity, url: String, page: Int): List<ModelTiktok> {
         val profileID = if (url.contains("http")) extractUsernameFromTiktokUrl(url) else url
-        return getWebView(activity, profileID.toProfileUrl(), true, 3000, 20000).let { view->
+        return getWebView(activity, profileID.toProfileUrl(), true, 3000, 20000).let { view ->
             delay(3000)
             withContext(Dispatchers.Main) {
                 view?.evaluateJavascript(REMOVE_LOGIN, null)
@@ -158,5 +162,39 @@ class RepoTiktok : BaseTiktok {
                 }
             }
         }
+    }
+
+    override suspend fun getProfilePaginate(
+        activity: Activity,
+        url: String,
+        page: Int
+    ): Flow<List<ModelTiktok>> {
+        val profileID = if (url.contains("http")) extractUsernameFromTiktokUrl(url) else url
+        return channelFlow {
+            val view = getWebView(activity, profileID.toProfileUrl(), true, 3000, 20000)
+            delay(3000)
+            var currentPosition: Int = 0
+            view?.evaluateJavascript(REMOVE_LOGIN, null)
+            for (x in 0..20) {
+                view?.evaluateJavascript(
+                    "(function() { return document.body.scrollHeight; })();"
+                ) { result ->
+                    val totalHeight = result?.toIntOrNull() ?: 0
+                    val pageSize = 1000
+
+                    while (currentPosition < totalHeight) {
+                        val script = "window.scrollTo(0, ${currentPosition + pageSize});"
+                        view.evaluateJavascript(script, null)
+                        currentPosition += pageSize
+                    }
+                }
+                view?.evaluateJavascript(GET_PROFILE_DATA) { html ->
+                    launch(Dispatchers.IO) { // Ensuring emissions on a proper dispatcher
+                        send(html.toTiktokArray(profileID))
+                    }
+                }
+                delay(2000)
+            }
+        }.flowOn(Dispatchers.Main) // Ensuring the flow is collected on Main dispatcher
     }
 }

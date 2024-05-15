@@ -35,17 +35,23 @@ class SplashActivity : AppCompatActivity(), TiktokLive.OnClick {
 
 
         CoroutineScope(Dispatchers.IO).launch {
+            Scrapper.tiktok.getProfilePaginate(
+                this@SplashActivity,
+                "https://www.tiktok.com/@sumaiya_mimu"
+            ).collect {
+                Log.e("Collect", it.size.toString())
+            }
 //            Scrapper.getUrlType("https://vt.tiktok.com/ZSFsHXB3F/").let {
 //                Log.e("TYPE", it.toString())
 //            }
 //
 //            listOf(
 //                async {
-                    Log.e("TIME", measureTimeMillis {
-                        Scrapper.facebook.getVideo("https://www.facebook.com/share/v/uAjY17QzG1keiwpw/?mibextid=jmPrMh")?.let {
-                            Log.e("DATA", it.toString())
-                        }
-                    }.toString())
+//                    Log.e("TIME", measureTimeMillis {
+//                        Scrapper.facebook.getVideo("https://www.facebook.com/share/v/uAjY17QzG1keiwpw/?mibextid=jmPrMh")?.let {
+//                            Log.e("DATA", it.toString())
+//                        }
+//                    }.toString())
 //                }, async {
 //                    Scrapper.instagram.getVideo("https://www.instagram.com/reel/C4lF8_0o-0p/?igsh=ODAxZ2V4aXQwaWx5")?.let {
 //                        Log.e("instagram", it.toString())

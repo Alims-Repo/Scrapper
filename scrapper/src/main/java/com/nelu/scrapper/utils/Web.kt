@@ -161,3 +161,17 @@ suspend fun paginateWebView(webView: WebView?, count: Int = 3) {
         delay(2000)
     }
 }
+
+suspend fun paginateOnce(webView: WebView?, currentPosition : Int) {
+    webView?.evaluateJavascript(
+        "(function() { return document.body.scrollHeight; })();"
+    ) { result ->
+        val totalHeight = result?.toIntOrNull() ?: 0
+        val pageSize = 1000
+
+        while (currentPosition < totalHeight) {
+            val script = "window.scrollTo(0, ${currentPosition + pageSize});"
+            webView.evaluateJavascript(script, null)
+        }
+    }
+}
