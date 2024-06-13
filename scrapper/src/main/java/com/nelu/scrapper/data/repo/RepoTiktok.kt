@@ -142,8 +142,8 @@ class RepoTiktok : BaseTiktok {
                     }
 
                     activity.addContentView(w, w.layoutParams)
-                    w.loadUrl("https://ttsave.app/profile")
-                    w.visibility = View.GONE
+                    w.loadUrl("https://ttsave.app/en/profile")
+//                    w.visibility = View.GONE
                 }
             }
         }
