@@ -73,7 +73,9 @@ class Downloader(
         val totalFileSize = body.contentLength()
         val outputFile = File(
             getPath(modelDownload),
-            modelDownload.id + if (modelDownload.audio) ".mp3" else ".mp4"
+            if (modelDownload.id.isEmpty())
+                System.currentTimeMillis().toString()
+            else modelDownload.id + if (modelDownload.audio) ".mp3" else ".mp4"
         )
 
         if (outputFile.exists()) outputFile.deleteRecursively()

@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.nelu.scrapper.Scrapper
 import com.nelu.scrapper.data.model.ModelDownload
 import com.nelu.scrapper.data.model.ModelFacebook.Companion.toModelDownload
+import com.nelu.scrapper.data.model.ModelTiktok
 import com.nelu.scrapper.data.model.ModelTiktok.Companion.toModelDownload
 import com.nelu.scrapper.data.repo.RepoFacebook
 import com.nelu.scrapper.di.Initializer.daoDownloads
@@ -35,12 +36,20 @@ class SplashActivity : AppCompatActivity(), TiktokLive.OnClick {
 
 
         CoroutineScope(Dispatchers.IO).launch {
-            Scrapper.tiktok.getProfilePaginate(
-                this@SplashActivity,
-                "https://www.tiktok.com/@sumaiya_mimu"
-            ).collect {
-                Log.e("Collect", it.size.toString())
+            Scrapper.tiktok.getVideo("https://vt.tiktok.com/ZSYhpseKm/").let {
+                Log.e("DATA", it?.toString() ?: "EMPTY")
+                Scrapper.downloads.download(
+                    it?.toModelDownload(
+                        it.music, true
+                    )!!
+                )
             }
+//            Scrapper.tiktok.getProfilePaginate(
+//                this@SplashActivity,
+//                "https://www.tiktok.com/@sumaiya_mimu"
+//            ).collect {
+//                Log.e("Collect", it.size.toString())
+//            }
 //            Scrapper.getUrlType("https://vt.tiktok.com/ZSFsHXB3F/").let {
 //                Log.e("TYPE", it.toString())
 //            }
