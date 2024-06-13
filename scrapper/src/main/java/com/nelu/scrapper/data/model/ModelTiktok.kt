@@ -20,6 +20,7 @@ data class ModelTiktok(
     val noWaterHD: String?
 ) {
     companion object {
+
         fun ModelTiktok.toModelDownload(downloadURL: String, audio: Boolean = false): ModelDownload {
             return ModelDownload(
                 id = id,
@@ -36,6 +37,7 @@ data class ModelTiktok(
         suspend fun JsonObject.toModelTiktok(url: String): ModelTiktok? {
             try {
                 get("data").asJsonObject.get("result").asJsonObject.run {
+
                     return ModelTiktok(
                         id = extractVideoIdFromTiktokUrl(url),
                         name = try {
@@ -48,7 +50,11 @@ data class ModelTiktok(
                         } catch (e: Exception) {
                             ""
                         },
-                        thumbnail = "",
+                        thumbnail = try {
+                            get("images").asJsonArray.get(0).asString
+                        } catch (e: Exception) {
+                            ""
+                        },
                         title = if (has("desc")) get("desc").asString else "",
                         music = if (has("music")) get("music").asString else "",
                         water = if (has("video_watermark")) get("video_watermark").asString else "",

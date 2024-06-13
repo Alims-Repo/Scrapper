@@ -74,7 +74,7 @@ class Downloader(
         val outputFile = File(
             getPath(modelDownload),
             if (modelDownload.id.isEmpty())
-                System.currentTimeMillis().toString()
+                System.currentTimeMillis().toString() + ".mp3"
             else modelDownload.id + if (modelDownload.audio) ".mp3" else ".mp4"
         )
 

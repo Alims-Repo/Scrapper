@@ -73,7 +73,8 @@ class RepoTiktok : BaseTiktok {
         }
         return model?.apply {
             id = vid
-            thumbnail = thumb
+            if (thumb.isNotEmpty())
+                thumbnail = thumb
         }
     }
 
